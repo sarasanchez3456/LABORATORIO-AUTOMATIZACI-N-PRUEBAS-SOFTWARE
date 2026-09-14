@@ -22,6 +22,8 @@ npx newman run .\Laboratorio_Automatizacion_Backend.postman_collection.json
 
 El endpoint público `POST /api/login` de Reqres devuelve actualmente el mensaje `Missing password` cuando falta la contraseña. El test acepta ese mensaje y `Contraseña Vacía`, que es la traducción indicada en el enunciado, manteniendo la validación del error HTTP `400`.
 
+El Ejercicio 1 también puede devolver `429 Too Many Requests` cuando ReqRes agota temporalmente el límite de solicitudes de la IP. En ese caso, Newman está funcionando correctamente; se debe esperar a que el límite se restablezca y ejecutar nuevamente esa colección. Las colecciones de FakeStore y JSONPlaceholder pueden ejecutarse por separado.
+
 ## Guia frontend con Playwright
 
 Esta sección describe la parte frontend del laboratorio. Las pruebas de Playwright deben mantenerse separadas de la colección de Postman.
