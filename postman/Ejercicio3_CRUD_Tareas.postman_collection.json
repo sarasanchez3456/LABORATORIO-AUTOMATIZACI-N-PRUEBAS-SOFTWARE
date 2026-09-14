@@ -1,0 +1,160 @@
+{
+  "info": {
+    "name": "Ejercicio 3 - Gestión Dinámica de Tareas CRUD",
+    "_postman_id": "ejercicio-3-crud",
+    "description": "Pruebas API REST - jsonplaceholder.typicode.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://jsonplaceholder.typicode.com"
+    },
+    {
+      "key": "created_post_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "POST - Crear Recurso",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 201 Created",
+              "pm.test('Código de respuesta es 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "// Verificar que la respuesta contenga un id",
+              "pm.test('La respuesta contiene un id', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('id');",
+              "    pm.expect(responseJson.id).to.be.a('number');",
+              "});",
+              "",
+              "// Guardar el ID generado en una variable de Postman",
+              "pm.test('Guardar ID del post creado', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.collectionVariables.set('created_post_id', responseJson.id);",
+              "    pm.expect(pm.collectionVariables.get('created_post_id')).to.not.be.empty;",
+              "});",
+              "",
+              "// Verificar que los campos enviados coincidan",
+              "pm.test('El título coincide con el enviado', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.title).to.eql('Mi Primer Post Automatizado');",
+              "});",
+              "",
+              "pm.test('El body coincide con el enviado', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.body).to.eql('Este es el contenido del post creado para el laboratorio de automatización.');",
+              "});",
+              "",
+              "pm.test('El userId coincide con el enviado', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.userId).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Mi Primer Post Automatizado\",\n  \"body\": \"Este es el contenido del post creado para el laboratorio de automatización.\",\n  \"userId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": ["{{base_url}}"],
+          "path": ["posts"]
+        }
+      }
+    },
+    {
+      "name": "PUT - Actualizar Recurso",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 200 OK",
+              "pm.test('Código de respuesta es 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Verificar que el título fue actualizado",
+              "pm.test('El título fue actualizado correctamente', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.title).to.eql('Título Actualizado');",
+              "});",
+              "",
+              "// Verificar que el id se mantiene",
+              "pm.test('El id del recurso se mantiene', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.id).to.eql(1);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1,\n  \"title\": \"Título Actualizado\",\n  \"body\": \"Contenido actualizado del post.\",\n  \"userId\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/posts/1",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "1"]
+        }
+      }
+    },
+    {
+      "name": "DELETE - Eliminar Recurso",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 200 OK",
+              "pm.test('Código de respuesta es 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Verificar que la respuesta sea un objeto vacío o tenga estructura válida",
+              "pm.test('La respuesta indica eliminación exitosa', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.be.an('object');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/posts/1",
+          "host": ["{{base_url}}"],
+          "path": ["posts", "1"]
+        }
+      }
+    }
+  ]
+}

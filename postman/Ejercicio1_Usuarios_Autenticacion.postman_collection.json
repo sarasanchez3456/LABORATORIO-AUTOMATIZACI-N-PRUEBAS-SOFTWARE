@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "Ejercicio 1 - Gestión de Usuarios y Autenticación",
+    "_postman_id": "ejercicio-1-users-auth",
+    "description": "Pruebas API REST - reqres.in",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://reqres.in"
+    }
+  ],
+  "item": [
+    {
+      "name": "POST - Crear Usuario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 201 Created",
+              "pm.test('Código de respuesta es 201 Created', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "",
+              "// Verificar que la respuesta contenga el campo 'id'",
+              "pm.test('La respuesta contiene el campo id', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('id');",
+              "    pm.expect(responseJson.id).to.be.a('number');",
+              "});",
+              "",
+              "// Verificar que la respuesta contenga el campo 'createdAt'",
+              "pm.test('La respuesta contiene el campo createdAt', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('createdAt');",
+              "    pm.expect(responseJson.createdAt).to.be.a('string');",
+              "});",
+              "",
+              "// Validar el contenido del body enviado",
+              "pm.test('El nombre enviado coincide con la respuesta', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.name).to.eql('Juan Perez');",
+              "});",
+              "",
+              "pm.test('El job enviado coincide con la respuesta', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.job).to.eql('QA Engineer');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Juan Perez\",\n  \"job\": \"QA Engineer\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/users",
+          "host": ["{{base_url}}"],
+          "path": ["api", "users"]
+        }
+      }
+    },
+    {
+      "name": "POST - Login Fallido (Sin Contraseña)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 400 Bad Request",
+              "pm.test('Código de respuesta es 400 Bad Request', function () {",
+              "    pm.response.to.have.status(400);",
+              "});",
+              "",
+              "// Verificar el mensaje de error",
+              "pm.test('El mensaje de error es \"Contraseña Vacía\"', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.error).to.eql('Missing password');",
+              "});",
+              "",
+              "// Validar que la respuesta sea un objeto con la propiedad error",
+              "pm.test('La respuesta contiene la propiedad error', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('error');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"sydney@fife\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/login",
+          "host": ["{{base_url}}"],
+          "path": ["api", "login"]
+        }
+      }
+    }
+  ]
+}

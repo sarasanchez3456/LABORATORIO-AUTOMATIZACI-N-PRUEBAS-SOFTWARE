@@ -1,0 +1,125 @@
+{
+  "info": {
+    "name": "Ejercicio 2 - Flujo de Compra y Catálogo E-Commerce",
+    "_postman_id": "ejercicio-2-ecommerce",
+    "description": "Pruebas API REST - fakestoreapi.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://fakestoreapi.com"
+    },
+    {
+      "key": "product_price",
+      "value": ""
+    },
+    {
+      "key": "product_title",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "GET - Obtener Catálogo de Productos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 200 OK",
+              "pm.test('Código de respuesta es 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Verificar que la respuesta sea un array con más de 0 elementos",
+              "pm.test('El catálogo contiene productos', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.be.an('array');",
+              "    pm.expect(responseJson.length).to.be.above(0);",
+              "});",
+              "",
+              "// Verificar estructura del primer producto",
+              "pm.test('El primer producto tiene estructura válida', function () {",
+              "    const responseJson = pm.response.json();",
+              "    const firstProduct = responseJson[0];",
+              "    pm.expect(firstProduct).to.have.property('id');",
+              "    pm.expect(firstProduct).to.have.property('title');",
+              "    pm.expect(firstProduct).to.have.property('price');",
+              "    pm.expect(firstProduct).to.have.property('description');",
+              "    pm.expect(firstProduct).to.have.property('category');",
+              "    pm.expect(firstProduct).to.have.property('image');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/products",
+          "host": ["{{base_url}}"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "GET - Obtener Producto por ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Validar código de respuesta HTTP 200 OK",
+              "pm.test('Código de respuesta es 200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "// Guardar precio en variable de colección",
+              "pm.test('Guardar precio del producto en variable', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.collectionVariables.set('product_price', responseJson.price);",
+              "    pm.expect(pm.collectionVariables.get('product_price')).to.not.be.empty;",
+              "});",
+              "",
+              "// Guardar título en variable de colección",
+              "pm.test('Guardar título del producto en variable', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.collectionVariables.set('product_title', responseJson.title);",
+              "    pm.expect(pm.collectionVariables.get('product_title')).to.not.be.empty;",
+              "});",
+              "",
+              "// Validar esquema JSON del producto",
+              "pm.test('El producto tiene esquema válido', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson).to.have.property('id').that.is.a('number');",
+              "    pm.expect(responseJson).to.have.property('title').that.is.a('string');",
+              "    pm.expect(responseJson).to.have.property('price').that.is.a('number');",
+              "    pm.expect(responseJson).to.have.property('description').that.is.a('string');",
+              "    pm.expect(responseJson).to.have.property('category').that.is.a('string');",
+              "    pm.expect(responseJson).to.have.property('image').that.is.a('string');",
+              "    pm.expect(responseJson).to.have.property('rating').that.is.an('object');",
+              "    pm.expect(responseJson.rating).to.have.property('rate');",
+              "    pm.expect(responseJson.rating).to.have.property('count');",
+              "});",
+              "",
+              "// Verificar que el precio sea un número positivo",
+              "pm.test('El precio es un número positivo', function () {",
+              "    const responseJson = pm.response.json();",
+              "    pm.expect(responseJson.price).to.be.above(0);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/products/1",
+          "host": ["{{base_url}}"],
+          "path": ["products", "1"]
+        }
+      }
+    }
+  ]
+}
