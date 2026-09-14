@@ -25,7 +25,9 @@ test.describe('Ejercicio 2 - Flujo de Compra SauceDemo', () => {
     await expect(page).toHaveURL(/.*cart/);
 
     // Verificar que el producto está en el carrito
-    await expect(page.locator('.inventory_item_name')).toContainText('Sauce Labs Backpack');
+    await expect(
+      page.locator('.cart_item .inventory_item_name')
+    ).toHaveText('Sauce Labs Backpack');
 
     // 4. Proceder al checkout
     await page.locator('#checkout').click();
