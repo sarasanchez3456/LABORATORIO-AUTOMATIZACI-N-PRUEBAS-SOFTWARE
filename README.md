@@ -18,8 +18,6 @@ npx newman run .\postman\Laboratorio_Automatizacion_Backend.postman_collection.j
 
 La ejecucion validada contiene 7 peticiones, 14 aserciones y 0 fallos.
 
-La documentacion detallada de Postman y Newman esta en [postman/README.md](postman/README.md).
-
 ## Frontend: Playwright
 
 La parte frontend debe automatizar estos tres escenarios:
@@ -35,8 +33,6 @@ npm init playwright@latest
 npx playwright test
 npx playwright show-report
 ```
-
-La guia con ejemplos completos de los tres scripts está en [postman/README.md](postman/README.md), en la seccion **Guia frontend con Playwright**.
 
 ## Alcance
 
