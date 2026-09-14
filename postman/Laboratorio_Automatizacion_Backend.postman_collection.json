@@ -1,0 +1,333 @@
+{
+  "info": {
+    "name": "Laboratorio Automatizacion - Backend",
+    "description": "Pruebas backend de los ejercicios 1, 2 y 3. No contiene pruebas de frontend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "reqresBaseUrl",
+      "value": "https://reqres.in/api"
+    },
+    {
+      "key": "fakeStoreBaseUrl",
+      "value": "https://fakestoreapi.com"
+    },
+    {
+      "key": "jsonPlaceholderBaseUrl",
+      "value": "https://jsonplaceholder.typicode.com"
+    },
+    {
+      "key": "createdUserId",
+      "value": ""
+    },
+    {
+      "key": "productTitle",
+      "value": ""
+    },
+    {
+      "key": "productPrice",
+      "value": ""
+    },
+    {
+      "key": "createdPostId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Ejercicio 1 - Usuarios y autenticacion",
+      "item": [
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Sarit Tester\",\n  \"job\": \"QA Automation\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresBaseUrl}}/users",
+              "host": [
+                "{{reqresBaseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "pm.test('La respuesta contiene id', function () {",
+                  "    pm.expect(body).to.have.property('id').that.is.not.empty;",
+                  "});",
+                  "pm.test('La respuesta contiene createdAt', function () {",
+                  "    pm.expect(body).to.have.property('createdAt').that.is.a('string').and.not.empty;",
+                  "});",
+                  "pm.collectionVariables.set('createdUserId', body.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login fallido - contraseña vacia",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"sydney@fife\"\n}"
+            },
+            "url": {
+              "raw": "{{reqresBaseUrl}}/login",
+              "host": [
+                "{{reqresBaseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "pm.test('El mensaje indica que la contraseña esta vacia', function () {",
+                  "    pm.expect(body).to.have.property('error');",
+                  "    pm.expect(['Missing password', 'Contraseña Vacía']).to.include(body.error);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ejercicio 2 - Catalogo y productos",
+      "item": [
+        {
+          "name": "Obtener catalogo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{fakeStoreBaseUrl}}/products",
+              "host": [
+                "{{fakeStoreBaseUrl}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const products = pm.response.json();",
+                  "pm.test('El catalogo es un array con productos', function () {",
+                  "    pm.expect(products).to.be.an('array').that.is.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener producto por ID 1",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{fakeStoreBaseUrl}}/products/1",
+              "host": [
+                "{{fakeStoreBaseUrl}}"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const product = pm.response.json();",
+                  "pm.test('El producto cumple el esquema esperado', function () {",
+                  "    pm.expect(product).to.have.all.keys('id', 'title', 'price', 'description', 'category', 'image', 'rating');",
+                  "    pm.expect(product.id).to.eql(1);",
+                  "    pm.expect(product.title).to.be.a('string').and.not.empty;",
+                  "    pm.expect(product.price).to.be.a('number');",
+                  "    pm.expect(product.rating).to.be.an('object');",
+                  "});",
+                  "pm.collectionVariables.set('productTitle', product.title);",
+                  "pm.collectionVariables.set('productPrice', String(product.price));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ejercicio 3 - CRUD de posts",
+      "item": [
+        {
+          "name": "Crear post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Prueba de automatizacion\",\n  \"body\": \"Contenido creado desde Postman\",\n  \"userId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{jsonPlaceholderBaseUrl}}/posts",
+              "host": [
+                "{{jsonPlaceholderBaseUrl}}"
+              ],
+              "path": [
+                "posts"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const post = pm.response.json();",
+                  "pm.test('La respuesta contiene una ID generada', function () {",
+                  "    pm.expect(post).to.have.property('id').that.is.a('number');",
+                  "});",
+                  "pm.collectionVariables.set('createdPostId', post.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar post 1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"title\": \"Titulo actualizado por Postman\",\n  \"body\": \"Contenido actualizado\",\n  \"userId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{jsonPlaceholderBaseUrl}}/posts/1",
+              "host": [
+                "{{jsonPlaceholderBaseUrl}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('El estado es 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('El titulo fue actualizado', function () {",
+                  "    pm.expect(pm.response.json().title).to.eql('Titulo actualizado por Postman');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar post 1",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{jsonPlaceholderBaseUrl}}/posts/1",
+              "host": [
+                "{{jsonPlaceholderBaseUrl}}"
+              ],
+              "path": [
+                "posts",
+                "1"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('La eliminacion devuelve 200 o 204', function () {",
+                  "    pm.expect([200, 204]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
