@@ -1,0 +1,16 @@
+{
+  "name": "laboratorio-automatizacion",
+  "version": "1.0.0",
+  "description": "Laboratorio de Automatización de Pruebas de Software",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ejercicio1": "npx playwright test tests/ejercicio1-login.spec.ts",
+    "test:ejercicio2": "npx playwright test tests/ejercicio2-saucedemo.spec.ts",
+    "test:ejercicio3": "npx playwright test tests/ejercicio3-webtables.spec.ts",
+    "test:headed": "npx playwright test --headed",
+    "test:report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  }
+}
